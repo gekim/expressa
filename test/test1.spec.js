@@ -11,14 +11,10 @@ function loadFile(filePath) {
 }
 
 describe('Expressa', function () {
-    let expressa, LOOP_INVARIANT;
+    let LOOP_INVARIANT;
 
     before(function () {
         LOOP_INVARIANT = loadFile('./fixtures/loop-invariant-for.js');
-    });
-
-    beforeEach(function () {
-        expressa = new Expressa();
     });
 
     describe('Initialization', function () {
@@ -26,10 +22,17 @@ describe('Expressa', function () {
     });
 
     describe('Parsing', function () {
-        it('should parse a program', function () {
-            expect(function () {
-                expressa.parse(LOOP_INVARIANT);
-            }).to.not.throw(Error);
+        it('should get all the loops of a program', function () {
+            const expressa = new Expressa(LOOP_INVARIANT);
+            const loops = expressa._getLoopStatements();
+            expect(loops.length).to.equal(3);
+            const filteredLoops = expressa.categorizeLoops();
+            expect(filteredLoops.length).to.equal(0);
+        });
+        it('should parse and filter directly', function () {
+            const expressa = new Expressa(LOOP_INVARIANT);
+            const filteredLoops = expressa.categorizeLoops();
+            expect(filteredLoops.length).to.equal(0);
         });
     });
 });
